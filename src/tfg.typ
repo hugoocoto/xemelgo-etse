@@ -94,6 +94,7 @@
   // Properties
   let t = i18n-for(lang, i18n)
   i18n-state.update(t)
+  let (student, ..tutors) = if authors == () { ((name: none),) } else { authors }
   let date = if date == auto { datetime.today() } else { date }
   let to = if blank-pages { "odd" } else { none }
   set document(title: title, author: authors.map(author => author.name), date: date)
@@ -134,10 +135,10 @@
     v(20fr)
     pad(left: 4cm + 18pt + 6pt, align(left, text(size: 17pt)[
       #emph(t.author) \
-      *#authors.at(0).name*
+      *#student.name*
       #v(0.3em)
       #emph(t.tutors) \
-      #authors.slice(1).map(a => strong(a.name)).join(linebreak())
+      #tutors.map(a => strong(a.name)).join(linebreak())
     ]))
     v(20fr)
     text(size: 17pt, weight: "bold", t.degree)
@@ -155,19 +156,17 @@
 
   // CERTIFICATION PAGE
   if certification {
-    let author = authors.at(0).name
-    let tutors = authors.slice(1).map(a => a.name)
-    let departments = authors.slice(1).map(a => a.at("department", default: t.department))
+    let departments = tutors.map(a => a.at("department", default: t.department))
     if logo != none {
       pad(left: 1.5em, logo-at(logo, 4cm))
       v(1cm)
     }
     let named(name) = strong(if t.honorific == none { name } else [#t.honorific #name])
-    [#tutors.zip(departments).map(((n, d)) => [#named(n), #t.professor-of #d #t.of-usc]).join(t.conj),]
+    [#tutors.zip(departments).map(((a, d)) => [#named(a.name), #t.professor-of #d #t.of-usc]).join(t.conj),]
     v(1cm)
     t.report
     v(1cm)
-    [#t.report-title _#title;_, #t.report-by #named(author) #t.report-text #departments.at(0) #t.of-usc.]
+    [#t.report-title _#title;_, #t.report-by #named(student.name) #t.report-text #departments.at(0, default: t.department) #t.of-usc.]
     v(1cm)
     [#t.report-end #format-date(date, t.date-format, t):]
     v(2cm)
@@ -177,8 +176,8 @@
       row-gutter: 3.6cm,
       ..range(tutors.len()).map(i => if i == 0 { t.tutor } else { t.cotutor }),
       t.student,
-      ..tutors,
-      author,
+      ..tutors.map(a => a.name),
+      student.name,
     ))
     pagebreak(to: to)
   } // CERTIFICATION PAGE
@@ -291,6 +290,7 @@
       pagebreak(weak: true, to: to)
       counter(figure.where(kind: image)).update(0)
       counter(figure.where(kind: table)).update(0)
+      counter(figure.where(kind: raw)).update(0)
       counter(math.equation).update(0)
       chapter-title(it.body, number: if it.numbering != none {
         [#it.supplement #context counter(heading).display(it.numbering).trim(".")]
@@ -369,6 +369,7 @@
   logo: none,
 ) = {
   let t = i18n-for(lang, i18n)
+  let (student, ..tutors) = if authors == () { ((name: none),) } else { authors }
   set text(font: "New Computer Modern", size: 12pt, lang: lang)
   set par(leading: 6pt, spacing: 6pt, justify: false)
   rect(width: 12cm, height: 12cm, inset: 0pt, stroke: 0.4pt, place(left + horizon, dx: 1cm)[
@@ -382,8 +383,8 @@
     #t.university-short
     #v(0.5em)
     #t.title #title \
-    #t.cd-author #authors.at(0, default: (name: none)).name \
-    #t.tutors #authors.slice(1).map(a => a.name).join(", ") \
+    #t.cd-author #student.name \
+    #t.tutors #tutors.map(a => a.name).join(", ") \
     #t.course #course \
     #t.session #session
   ])
