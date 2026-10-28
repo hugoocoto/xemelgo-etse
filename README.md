@@ -12,6 +12,26 @@ A clone of the official LaTeX templates, in Spanish, Galician or English.
   <img alt="Page with a running header, a figure, a table and section headings" src="docs/header.png" width="24%">
 </p>
 
+## QUICKEST QUICK START
+
+Send this prompt to your favourite LLM:
+
+```txt
+I want to write my TFG memoria (GrEI, ETSE-USC) in Typst with the package
+`xemelgo-etse` (latest version). Ask me everything through your question/choice
+tool, never as a list in chat.
+
+1. Ask me about every option in the template (model A/B/C, language, title,
+   authors and tutors, front pages, layout, code style...), giving "Placeholder"
+   as an option for text fields.
+2. Create the project with `typst init`, using the example for my model from
+   https://typst.app/universe/package/xemelgo-etse#examples (B and C are in the
+   GitHub repo's `examples/` folder). Write the chapter text in my chosen
+   language, mark placeholders with `// TODO`, and check that it compiles.
+3. Then interview me about my project and draft the Introduction from my
+   answers. Don't invent data, results or references: leave a `// TODO` and ask.
+```
+
 ## How to use
 
 1. Create the project: *Start from template* in the web app, or `typst init @preview/xemelgo-etse:0.1.0`.
